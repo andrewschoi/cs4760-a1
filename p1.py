@@ -13,7 +13,42 @@ def imread(filename):
 
 ### TODO 2: Convolve an image (m x n x 3 or m x n) with a filter(l x k). Perform "same" filtering. Apply the filter to each channel if there are more than 1 channels
 def convolve(img, filt):
-    pass
+    m = len(img) #image rows
+    n = len(img[0]) #image columns
+
+    is_color = isinstance(img[0][0], list)
+    resultant_img = [[-1 for _ in range(n)] for _ in range(m)] if is_color else [[[-1,-1,-1] for _ in range(n)] for _ in range(m)]
+
+    def does_fit(i, j):
+        if i - len(filt) // 2 < 0 or i + len(filt) // 2 >= m:
+            return False
+        if j - len(filt[0]) // 2 < 0 or j + len(filt[0]) // 2 >= n:
+            return False
+        return True
+
+    def filter(i, j): 
+        if not does_fit(i, j):
+            return img[i][j]
+
+        is_color = isinstance(img[i][j], list)
+        
+        ans = 0 if is_color else np.array([0,0,0])
+        for k in range(-len(filt) // 2, len(filt) // 2 + 1):
+            for l in range(-len(filt[0]) // 2, len(filt[0]) // 2 + 1):
+                if is_color:
+                    ans += np.array(img[i + k][j + l]) * filt[k + len(filt) // 2][l + len(filt[0] // 2)]
+                else:
+                    ans += img[i + k][j + l] * filt[k + len(filt) // 2][l + len(filt[0] // 2)]
+        return ans
+    
+    for i in range(len(img)):
+        for j in range(len(img[0])):
+            resultant_img[i][j] = filter(i, j)
+    return resultant_img
+
+
+        
+
 
 
 
