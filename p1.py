@@ -49,12 +49,25 @@ def convolve(img, filt):
 
         
 
-
-
-
 ### TODO 3: Create a gaussian filter of size k x k and with standard deviation sigma
 def gaussian_filter(k, sigma):
-    pass
+    def gaussian(x, y):
+        const = 1 / (2 * np.pi * sigma ** 2)
+        exponent = - (x ** 2 + y ** 2) / (2 * sigma ** 2)
+        return const * np.exp(exponent)
+    
+    filter = np.zeros((k, k))
+
+    for x in range(-k // 2, k // 2 + 1):
+        for y in range(-k // 2, k // 2 + 1):
+            i = x + k // 2
+            j = y + k // 2
+            
+            filter[i][j] = gaussian(i, j)
+    filter /= np.sum(filter)
+    
+    return filter
+
 
 ### TODO 4: Compute the image gradient. 
 ### First convert the image to grayscale by using the formula:
