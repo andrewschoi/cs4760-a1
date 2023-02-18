@@ -120,7 +120,16 @@ def check_distance_from_line(x, y, theta, c, thresh):
 ### Mark the pixels that are less than `thresh` units away from the line with red color,
 ### and return a copy of the `img` with lines.
 def draw_lines(img, lines, thresh):
-    pass
+    n = len(img)
+    m = len(img[0])
+
+    result_img = [[img[i][j][:] for j in range(m)] for i in range(n)]
+
+    for i in range(n):
+        for j in range(m):
+            result_img[i][j] = [255, 0, 0] if any([check_distance_from_line(i, j, line, thresh) for line in lines]) else result_img[i][j]
+    return result_img
+
 
 ### TODO 7: Do Hough voting. You get as input the gradient magnitude (m x n) and the gradient orientation (m x n), 
 ### as well as a set of possible theta values and a set of possible c values. 
