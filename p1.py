@@ -105,7 +105,14 @@ def gradient(img):
 ### The input x and y are numpy arrays of the same shape, representing the x and y coordinates of each pixel
 ### Return a boolean array that indicates True for pixels whose distance is less than the threshold
 def check_distance_from_line(x, y, theta, c, thresh):
-    pass
+    n = len(x)
+    is_less = [False] * n
+    for i in range(n):
+        pos_x, pos_y = x[i], y[i]
+        d = pos_x * np.cos(theta) + y * np.sin(theta) + c 
+        is_less[i] = d < thresh 
+    return is_less
+
 
 ### TODO 6: Write a function to draw a set of lines on the image. 
 ### The `img` input is a numpy array of shape (m x n x 3).
