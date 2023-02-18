@@ -38,8 +38,8 @@ def convolve(img, filt):
                 ans += filt[fx][fy] * img[i][j]
         return ans
     
-    for i in range(len(img)):
-        for j in range(len(img[0])):
+    for i in range(m):
+        for j in range(n):
             init[i][j] = filter(i, j)
     
     return init
@@ -74,8 +74,30 @@ def gaussian_filter(k, sigma):
 ### convolve with [[0.5],[0],[-0.5]] to get the Y derivative on each channel
 ### Return the gradient magnitude and the gradient orientation (use arctan2)
 def gradient(img):
-    pass
+    m = len(img)
+    n = len(img[0])
 
+    grayscale = [img[i][:] for i in range(m)] #make deep copy
+
+    for i in range(m):
+        for j in range(n):
+            r, g, b = grayscale[i][j]
+
+            grayscale[i][j] = 0.2125 * r + 0.7154 * g + 0.0721 * b 
+    
+    filt = gaussian_filter(5, 1)
+    grayscale = convolve(grayscale, filt)
+    x_gradient = convolve(grayscale, [0.5, 0, -0.5])
+    y_gradient = convolve(grayscale, [[0.5], [0], [-0.5]])
+    
+    image_gradient = np.zeros((n,m))
+    image_orientation = np.zeros((n,m))
+    for i in range(n):
+        for j in range(m):
+            image_gradient[i][j] = np.sqrt(x_gradient[i][j] ** 2 + y_gradient[i][j] ** 2)
+            image_orientation[i][j] = np.arctan2(y_gradient[i][j], x_gradient[i][j])
+    return image_gradient, image_orientation
+    
 ##########----------------Line detection----------------
 
 ### TODO 5: Write a function to check the distance of a set of pixels from a line parametrized by theta and c. The equation of the line is:
