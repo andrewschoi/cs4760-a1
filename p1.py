@@ -7,7 +7,7 @@ from PIL import Image
 def imread(filename):
     img = Image.open(filename)
     img_array = np.array(img)
-    img_array = img_array.astype(np.float32)
+    img_array = img_array.astype(np.float)
     img_array /= 255
     return img_array
 
@@ -16,36 +16,33 @@ def convolve(img, filt):
     m = len(img) #image rows
     n = len(img[0]) #image columns
 
-    is_color = isinstance(img[0][0], list)
-    resultant_img = [[-1 for _ in range(n)] for _ in range(m)] if is_color else [[[-1,-1,-1] for _ in range(n)] for _ in range(m)]
+    l = len(filt) #filter rows
+    k = len(filt[0]) #filter cols
 
+    init = np.zeros((m, n)) if isinstance(img[0][0], list) else np.zeros((m,n,3))
+    
     def does_fit(i, j):
-        if i - len(filt) // 2 < 0 or i + len(filt) // 2 >= m:
+        if not (0 <= i - l //2 < m and 0 <= i + l // 2 < m):
             return False
-        if j - len(filt[0]) // 2 < 0 or j + len(filt[0]) // 2 >= n:
+        if not (0 <= j - k // 2 < n and 0 <= j + k // 2 < n):
             return False
         return True
-
-    def filter(i, j): 
+    
+    def filter(i, j):
         if not does_fit(i, j):
             return img[i][j]
-
-        is_color = isinstance(img[i][j], list)
-        
-        ans = 0 if is_color else np.array([0,0,0])
-        for k in range(-len(filt) // 2, len(filt) // 2 + 1):
-            for l in range(-len(filt[0]) // 2, len(filt[0]) // 2 + 1):
-                if is_color:
-                    ans += np.array(img[i + k][j + l]) * filt[k + len(filt) // 2][l + len(filt[0] // 2)]
-                else:
-                    ans += img[i + k][j + l] * filt[k + len(filt) // 2][l + len(filt[0] // 2)]
+        ans = 0. if isinstance(img[0][0], list) else np.zeros((3))
+        for x in range(-l // 2 + 1, l // 2 + 1):
+            for y in range(-k // 2 + 1, k // 2 + 1):
+                fx, fy = x + l // 2, y + k // 2
+                ans += filt[fx][fy] * img[i][j]
         return ans
     
     for i in range(len(img)):
         for j in range(len(img[0])):
-            resultant_img[i][j] = filter(i, j)
-    return resultant_img
-
+            init[i][j] = filter(i, j)
+    
+    return init
 
         
 
