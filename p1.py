@@ -159,7 +159,7 @@ def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
             part_c = [theta - gradori[y][x] < thresh3 for x, y in zip(xpos, ypos)]
             for b, c in zip(part_b, part_c):
                 if b and c:
-                    ans[b][c] += 1
+                    ans[i][j] += 1
     return ans
 
 ### TODO 8: Find local maxima in the array of votes. A (theta, c) pair counts as a local maxima if: 
