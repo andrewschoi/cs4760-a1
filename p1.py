@@ -35,7 +35,7 @@ def convolve(img, filt):
         for x in range(-l // 2 + 1, l // 2 + 1):
             for y in range(-k // 2 + 1, k // 2 + 1):
                 fx, fy = x + l // 2, y + k // 2
-                ans += filt[fx][fy] * img[i][j]
+                ans += filt[fx][fy] * img[i + x][j + y]
         return ans
     
     for i in range(m):
