@@ -169,7 +169,21 @@ def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
 ### coordinate of the potential local maxima placing at the center.
 ### Return a list of (theta, c) pairs.
 def localmax(votes, thetas, cs, thresh, nbhd):
-    pass
+    def is_local_max(i, j):
+        val = votes[i][j]
+        for y in range(-nbhd // 2, nbhd // 2):
+            for x in range(-nbhd // 2, nbhd // 2):
+                if votes[i + x][j + y] > val:
+                    return False
+        return True
+                
+    ans = []
+    for theta in thetas:
+        for c in cs:
+            if votes[theta][c] > thresh and is_local_max(theta, c):
+                ans.append([theta, c])
+    return ans
+
   
 # Final product: Identify lines using the Hough transform    
 def do_hough_lines(filename):
