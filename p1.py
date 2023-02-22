@@ -167,7 +167,7 @@ def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
         for j, c in enumerate(cs):
             close_enough = check_distance_from_line(
                 ypos, xpos, theta, c, thresh2)
-            o = gradori[xpos, ypos] - theta
+            o = abs(gradori[xpos, ypos] - theta)
             b = o < thresh3
             hough_vote[i][j] += np.sum(b & close_enough)
 
