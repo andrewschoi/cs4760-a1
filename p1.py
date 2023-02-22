@@ -133,21 +133,31 @@ def draw_lines(img, lines, thresh):
     if not isinstance(img, np.ndarray):
         img = np.array(img)
 
-    m, n, _ = np.shape(img)
+    m, n, k = np.shape(img)
     res = img.copy()
 
-    xs, ys = np.meshgrid(np.arange(n), np.arange(m), indexing='xy')
+    x_coords = np.arange(n)
+    y_coords = np.arange(m)
 
-    for theta, c in lines:
-        red = check_distance_from_line(
-            xs, ys, theta, c, thresh)
-        red = red.reshape((m, n))
+    xpos, ypos = x_coords.flatten(), y_coords.flatten()
 
-        for x in range(m):
-            for y in range(n):
-                if red[x, y]:
-                    res[x, y] = [1, 0, 0]
+    
+    for theta, c in lines:          
+        for x in xpos:
+            for y in ypos:
+                red = check_distance_from_line([x], [y], theta, c, thresh)[0]
+                if red:
+                    try:
+                        res[y, x] = [1, 0, 0]
+                    except:
+                        res[y, x] = [1, 0, 0, 0]
+                    
+
+        
     return res
+
+
+
 
 # TODO 7: Do Hough voting. You get as input the gradient magnitude (m x n) and the gradient orientation (m x n),
 # as well as a set of possible theta values and a set of possible c values.
